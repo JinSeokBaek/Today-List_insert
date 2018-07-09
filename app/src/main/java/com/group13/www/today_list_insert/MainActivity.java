@@ -229,110 +229,110 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        alarm();
+        //alarm();
         //Toast.makeText(getApplication(),title+"+"+content+"+"+hm,Toast.LENGTH_SHORT).show();
     }
-    public void alarm(){
-
-        //#############################################################################################################################################
-        //고정된 노티바
-        PendingIntent pendingNoti = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        NotificationCompat.Builder noti = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Today-List")
-                .setContentText("오늘 할 일 있음")
-                .setLargeIcon(icon)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentIntent(pendingNoti);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-            noti.setPriority(5);   //이 설정은 젤리빈 이상일떄만 사용
-        }
-
-        NotificationManager manageNoti = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manageNoti.cancel(0);
-        manageNoti.notify(0, noti.build());
-        //#############################################################################################################################################
-
-
-        long now = System.currentTimeMillis();  //현재 시간을 msec로 구한다
-        Date date = new Date(now);  //현재 시간을 date변수에 저장
-        //SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd");  //시간을 나타낼 포맷 저장
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-        String currentdate = df.format(new Date());
-        if(currentdate.charAt(5) == '0'){
-            String s1 = currentdate.substring(0, 5);
-            String s2 = currentdate.substring(6);
-            currentdate = s1 + s2;
-        }
-        //String formatDate = sdfNow.format(date);    //newDate변수에 값을 저장
-        try {
-            cursor2 = db.rawQuery(String.format("select _id, title from %s where date=%s", TABLE_NAME1, currentdate), null);
-            int id_m = 0;
-
-            while (cursor2.moveToNext()) {
-                id_m = cursor2.getInt(0);
-                title = cursor2.getString(1);
-            }
-            cursor3 = db.rawQuery(String.format("select _alarm, context from %s where _id_m=%d", TABLE_NAME2, id_m), null);
-            while (cursor3.moveToNext()) {
-                String alarm_ = cursor3.getString(0);
-                content=cursor3.getString(1);
-                alarm.add(alarm_);
-            }
-            //현재 시간
-            SimpleDateFormat sdfNow_clock = new SimpleDateFormat("HH:mm");
-            String formatClock = sdfNow_clock.format(date);
-
-            int i = 0;
-            while (i < alarm.size()) {
-                String _alarm = alarm.get(i);
-                int idx = _alarm.indexOf(":");
-                String hour_s = _alarm.substring(0, idx-1);
-                String min_s = _alarm.substring(idx+2);
-                hour = Integer.parseInt(hour_s);
-                minute = Integer.parseInt(min_s);
-
-                SimpleDateFormat h = new SimpleDateFormat("H",Locale.KOREA);
-                SimpleDateFormat m = new SimpleDateFormat("m",Locale.KOREA);
-                if (hour == Integer.parseInt(h.toString()) && minute == Integer.parseInt(m.toString())) {
-                    hm = String.valueOf(hour) +":"+ String.valueOf(minute);
-                    new Alarm(getApplication()).Alarm();
-                }
-                i++;
-            }
-
-            new Alarm(getApplication()).Alarm();
-            //String dbMonth = String.valueOf(clock.charAt(0)) + String.valueOf(clock.charAt(1));
-        }catch (Exception e){
-            Toast.makeText(getApplication(),e+"",Toast.LENGTH_LONG).show();
-        }
-       //Toast.makeText(getApplication(),title+"+"+content+"+"+hm+" "+currentdate,Toast.LENGTH_SHORT).show();
-    }
-    public class  Alarm {
-        private Context context;
-        public Alarm(Context context){
-            this.context = context;
-        }
-
-        public void Alarm() {
-            AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(MainActivity.this, BroadcastD.class);
-            intent.putExtra("title", title);
-            intent.putExtra("content", content);
-            intent.putExtra("clock", hm);
-
-            PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
-
-            Calendar calendar = Calendar.getInstance();
-
-            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), hour, minute, 00);
-
-            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
-        }
-    }
+//    public void alarm(){
+//
+//        //#############################################################################################################################################
+//        //고정된 노티바
+//        PendingIntent pendingNoti = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+//        NotificationCompat.Builder noti = new NotificationCompat.Builder(getApplicationContext())
+//                .setSmallIcon(R.mipmap.ic_launcher)
+//                .setContentTitle("Today-List")
+//                .setContentText("오늘 할 일 있음")
+//                .setLargeIcon(icon)
+//                .setAutoCancel(false)
+//                .setOngoing(true)
+//                .setContentIntent(pendingNoti);
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+//            noti.setPriority(5);   //이 설정은 젤리빈 이상일떄만 사용
+//        }
+//
+//        NotificationManager manageNoti = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//        manageNoti.cancel(0);
+//        manageNoti.notify(0, noti.build());
+//        //#############################################################################################################################################
+//
+//
+//        long now = System.currentTimeMillis();  //현재 시간을 msec로 구한다
+//        Date date = new Date(now);  //현재 시간을 date변수에 저장
+//        //SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/MM/dd");  //시간을 나타낼 포맷 저장
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+//        String currentdate = df.format(new Date());
+//        if(currentdate.charAt(5) == '0'){
+//            String s1 = currentdate.substring(0, 5);
+//            String s2 = currentdate.substring(6);
+//            currentdate = s1 + s2;
+//        }
+//        //String formatDate = sdfNow.format(date);    //newDate변수에 값을 저장
+//        try {
+//            cursor2 = db.rawQuery(String.format("select _id, title from %s where date=%s", TABLE_NAME1, currentdate), null);
+//            int id_m = 0;
+//
+//            while (cursor2.moveToNext()) {
+//                id_m = cursor2.getInt(0);
+//                title = cursor2.getString(1);
+//            }
+//            cursor3 = db.rawQuery(String.format("select _alarm, context from %s where _id_m=%d", TABLE_NAME2, id_m), null);
+//            while (cursor3.moveToNext()) {
+//                String alarm_ = cursor3.getString(0);
+//                content=cursor3.getString(1);
+//                alarm.add(alarm_);
+//            }
+//            //현재 시간
+//            SimpleDateFormat sdfNow_clock = new SimpleDateFormat("HH:mm");
+//            String formatClock = sdfNow_clock.format(date);
+//
+//            int i = 0;
+//            while (i < alarm.size()) {
+//                String _alarm = alarm.get(i);
+//                int idx = _alarm.indexOf(":");
+//                String hour_s = _alarm.substring(0, idx-1);
+//                String min_s = _alarm.substring(idx+2);
+//                hour = Integer.parseInt(hour_s);
+//                minute = Integer.parseInt(min_s);
+//
+//                SimpleDateFormat h = new SimpleDateFormat("H",Locale.KOREA);
+//                SimpleDateFormat m = new SimpleDateFormat("m",Locale.KOREA);
+//                if (hour == Integer.parseInt(h.toString()) && minute == Integer.parseInt(m.toString())) {
+//                    hm = String.valueOf(hour) +":"+ String.valueOf(minute);
+//                    new Alarm(getApplication()).Alarm();
+//                }
+//                i++;
+//            }
+//
+//            new Alarm(getApplication()).Alarm();
+//            //String dbMonth = String.valueOf(clock.charAt(0)) + String.valueOf(clock.charAt(1));
+//        }catch (Exception e){
+//            Toast.makeText(getApplication(),e+"",Toast.LENGTH_LONG).show();
+//        }
+//       //Toast.makeText(getApplication(),title+"+"+content+"+"+hm+" "+currentdate,Toast.LENGTH_SHORT).show();
+//    }
+//    public class  Alarm {
+//        private Context context;
+//        public Alarm(Context context){
+//            this.context = context;
+//        }
+//
+//        public void Alarm() {
+//            AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+//            Intent intent = new Intent(MainActivity.this, BroadcastD.class);
+//            intent.putExtra("title", title);
+//            intent.putExtra("content", content);
+//            intent.putExtra("clock", hm);
+//
+//            PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+//
+//            Calendar calendar = Calendar.getInstance();
+//
+//            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), hour, minute, 00);
+//
+//            am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+//        }
+//    }
 
 
     @Override
@@ -486,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
             bstop=setting.getString("bstopname", "정거장을 설정하세요");
             //station=setting.getString("station", "error");
         }
-        alarm();
+        //alarm();
         new Handler().postDelayed(new Runnable()
         {
             @Override
